@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Siswa</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        h2 { color: #6a1b9a; }
+        .btn-tambah {
+            background: #6a1b9a; color: white;
+            padding: 10px 20px; text-decoration: none;
+            border-radius: 5px; display: inline-block;
+            margin-bottom: 15px;
+        }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th { background: #6a1b9a; color: white; padding: 12px; text-align: left; }
+        td { padding: 10px 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f9f0ff; }
+        .hadir { color: green; font-weight: bold; }
+        .tidak { color: red; font-weight: bold; }
+        .btn-edit { background: #1976d2; color: white; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; }
+        .btn-hapus { background: #d32f2f; color: white; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; margin-left: 5px; }
+    </style>
+</head>
+<body>
+
+<h2>Data Siswa</h2>
+<a href="/siswa/hadir" class="btn-tambah">📋 Halaman Absensi</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nama</th>
+            <th>NIM</th>
+            <th>Kelas</th>
+            <th>Matakuliah</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="siswa, i : ${siswaList}">
+            <td th:text="${i.count}"></td>
+            <td th:text="${siswa.nama}"></td>
+            <td th:text="${siswa.nim}"></td>
+            <td th:text="${siswa.kelas}"></td>
+            <td th:text="${siswa.matakuliah}"></td>
+            <td th:class="${siswa.hadir} ? 'hadir' : 'tidak'"
+                th:text="${siswa.hadir} ? '✅ Hadir' : '❌ Tidak Hadir'">
+            </td>
+            <td>
+                <a th:href="@{'/siswa/update/' + ${siswa.id} + '?nama=' + ${siswa.nama} + '&nim=' + ${siswa.nim} + '&kelas=' + ${siswa.kelas} + '&matakuliah=' + ${siswa.matakuliah} + '&hadir=' + ${!siswa.hadir}}"
+                class="btn-edit"
+                th:text="${siswa.hadir} ? 'Set Tidak Hadir' : 'Set Hadir'">
+                </a>
+                <a th:href="@{'/siswa/delete/' + ${siswa.id}}"
+                class="btn-hapus"
+                onclick="return confirm('Hapus siswa ini?')">Hapus</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(siswaList)}">
+            <td colspan="7" style="text-align:center; color:#aaa; padding:20px;">Belum ada data siswa</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
