@@ -12,19 +12,6 @@ public class SiswaController {
     @Autowired
     private SiswaRepository siswaRepository;
 
-    // READ 
-    @GetMapping
-    public String getAllSiswa(Model model) {
-        model.addAttribute("siswaList", siswaRepository.findAll());
-        return "siswa";
-    }
-
-    // API JSON - untuk hadir.html fetch
-    @GetMapping(path = "/all", produces = "application/json")
-    @ResponseBody
-    public Iterable<Siswa> getAllJson() {
-        return siswaRepository.findAll();
-    }
 
     // CREATE
     @GetMapping("/create")
@@ -43,6 +30,20 @@ public class SiswaController {
         o.setHadir(hadir);
         siswaRepository.save(o);
         return "redirect:/siswa";
+    }
+
+    // READ 
+    @GetMapping
+    public String getAllSiswa(Model model) {
+        model.addAttribute("siswaList", siswaRepository.findAll());
+        return "siswa";
+    }
+
+    // API JSON 
+    @GetMapping(path = "/all", produces = "application/json")
+    @ResponseBody
+    public Iterable<Siswa> getAllJson() {
+        return siswaRepository.findAll();
     }
 
     // UPDATE
@@ -73,9 +74,4 @@ public class SiswaController {
         return "redirect:/siswa";
     }
 
-    // Halaman absensi
-    @GetMapping("/hadir")
-    public String halamanHadir() {
-        return "hadir";
-    }
 }

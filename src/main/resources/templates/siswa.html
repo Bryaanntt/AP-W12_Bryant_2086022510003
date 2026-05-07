@@ -5,65 +5,122 @@
     <title>Data Siswa</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
-        h2 { color: #6a1b9a; }
-        .btn-tambah {
+        h2 { 
+            background: #6a1b9a; 
+            color: #ffffff; 
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: inline-block;   
+        } 
+        h3 { color: white; margin: 0; }
+        .btn-absensi {
             background: #6a1b9a; color: white;
             padding: 10px 20px; text-decoration: none;
             border-radius: 5px; display: inline-block;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
-        th { background: #6a1b9a; color: white; padding: 12px; text-align: left; }
+        .section { margin-bottom: 30px; }
+        .section-header {
+            padding: 12px 15px;
+            border-radius: 10px 10px 0 0;
+        }
+        .header-hadir { background: #4caf50; }
+        .header-tidak { background: #9c27b0; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 0 0 10px 10px; overflow: hidden; }
+        th { padding: 12px; text-align: left; background: #f5f5f5; color: #333; }
         td { padding: 10px 12px; border-bottom: 1px solid #eee; }
         tr:hover { background: #f9f0ff; }
         .hadir { color: green; font-weight: bold; }
         .tidak { color: red; font-weight: bold; }
         .btn-edit { background: #1976d2; color: white; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; }
         .btn-hapus { background: #d32f2f; color: white; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; margin-left: 5px; }
+        .empty { text-align: center; color: #aaa; padding: 20px; }
     </style>
 </head>
 <body>
 
-<h2>Data Siswa</h2>
-<a href="/siswa/hadir" class="btn-tambah">📋 Halaman Absensi</a>
+<h2 class="section">Data Siswa</h2>
+<p class="btn-absensi">📋 Halaman Absensi</a>
 
-<table>
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Nama</th>
-            <th>NIM</th>
-            <th>Kelas</th>
-            <th>Matakuliah</th>
-            <th>Status</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="siswa, i : ${siswaList}">
-            <td th:text="${i.count}"></td>
-            <td th:text="${siswa.nama}"></td>
-            <td th:text="${siswa.nim}"></td>
-            <td th:text="${siswa.kelas}"></td>
-            <td th:text="${siswa.matakuliah}"></td>
-            <td th:class="${siswa.hadir} ? 'hadir' : 'tidak'"
-                th:text="${siswa.hadir} ? '✅ Hadir' : '❌ Tidak Hadir'">
-            </td>
-            <td>
-                <a th:href="@{'/siswa/update/' + ${siswa.id} + '?nama=' + ${siswa.nama} + '&nim=' + ${siswa.nim} + '&kelas=' + ${siswa.kelas} + '&matakuliah=' + ${siswa.matakuliah} + '&hadir=' + ${!siswa.hadir}}"
-                class="btn-edit"
-                th:text="${siswa.hadir} ? 'Set Tidak Hadir' : 'Set Hadir'">
-                </a>
-                <a th:href="@{'/siswa/delete/' + ${siswa.id}}"
-                class="btn-hapus"
-                onclick="return confirm('Hapus siswa ini?')">Hapus</a>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(siswaList)}">
-            <td colspan="7" style="text-align:center; color:#aaa; padding:20px;">Belum ada data siswa</td>
-        </tr>
-    </tbody>
-</table>
+<!-- Tabel HADIR -->
+<div class="section">
+    <div class="section-header header-hadir">
+        <h3>✅ Hadir</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nama</th>
+                <th>NIM</th>
+                <th>Kelas</th>
+                <th>Matakuliah</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="s, i : ${siswaList}">
+                <tr th:if="${s.hadir}">
+                    <td th:text="${i.count}"></td>
+                    <td th:text="${s.nama}"></td>
+                    <td th:text="${s.nim}"></td>
+                    <td th:text="${s.kelas}"></td>
+                    <td th:text="${s.matakuliah}"></td>
+                    <td>
+                        <a th:href="'/siswa/update/' + ${s.id} + '?nama=' + ${s.nama} + '&nim=' + ${s.nim} + '&kelas=' + ${s.kelas} + '&matakuliah=' + ${s.matakuliah} + '&hadir=false'"
+                            class="btn-edit">S  et Tidak Hadir</a>
+                        <a th:href="'/siswa/delete/' + ${s.id}"
+                            class="btn-hapus"
+                            onclick="return confirm('Hapus?')">Hapus</a>
+                    </td>
+                </tr>
+            </th:block>
+            <tr th:if="${#lists.isEmpty(siswaList)}">
+                <td colspan="6" class="empty">Belum ada siswa hadir</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Tabel TIDAK HADIR -->
+<div class="section">
+    <div class="section-header header-tidak">
+        <h3>❌ Tidak Hadir</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nama</th>
+                <th>NIM</th>
+                <th>Kelas</th>
+                <th>Matakuliah</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="s, i : ${siswaList}">
+                <tr th:if="${!s.hadir}">
+                    <td th:text="${i.count}"></td>
+                    <td th:text="${s.nama}"></td>
+                    <td th:text="${s.nim}"></td>
+                    <td th:text="${s.kelas}"></td>
+                    <td th:text="${s.matakuliah}"></td>
+                    <td>
+                        <a th:href="'/siswa/update/' + ${s.id} + '?nama=' + ${s.nama} + '&nim=' + ${s.nim} + '&kelas=' + ${s.kelas} + '&matakuliah=' + ${s.matakuliah} + '&hadir=true'"
+                            class="btn-edit">Set Hadir</a>
+                        <a th:href="'/siswa/delete/' + ${s.id}"
+                            class="btn-hapus"
+                            onclick="return confirm('Hapus?')">Hapus</a>
+                    </td>
+                </tr>
+            </th:block>
+            <tr th:if="${#lists.isEmpty(siswaList)}">
+                <td colspan="6" class="empty">Belum ada siswa tidak hadir</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>
